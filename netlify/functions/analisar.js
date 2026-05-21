@@ -2,6 +2,8 @@ const axios = require("axios");
 
 exports.handler = async (event) => {
 
+try{
+
 return {
 
 statusCode:200,
@@ -13,10 +15,26 @@ headers:{
 body:JSON.stringify({
 
 status:"online",
-msg:"Detector Hive conectado"
+msg:"Detector backend ativo"
 
 })
 
 };
+
+}catch(err){
+
+return {
+
+statusCode:500,
+
+body:JSON.stringify({
+
+erro:"Erro detector"
+
+})
+
+};
+
+}
 
 };
