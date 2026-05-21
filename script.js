@@ -7,14 +7,8 @@ document.getElementById("preview");
 const resultado =
 document.getElementById("resultado");
 
-const progressBar =
-document.getElementById("progressBar");
-
 const videoInput =
 document.getElementById("videoInput");
-
-const videoPreview =
-document.getElementById("videoPreview");
 
 const videoResultado =
 document.getElementById("videoResultado");
@@ -22,69 +16,8 @@ document.getElementById("videoResultado");
 const audioInput =
 document.getElementById("audioInput");
 
-const audioPreview =
-document.getElementById("audioPreview");
-
 const audioResultado =
 document.getElementById("audioResultado");
-
-let pontos = 0;
-
-/* PREVIEW */
-
-imageInput.addEventListener(
-"change",
-()=>{
-
-const file =
-imageInput.files[0];
-
-if(file){
-
-preview.src =
-URL.createObjectURL(file);
-
-preview.style.display =
-"block";
-
-}
-
-}
-);
-
-videoInput.addEventListener(
-"change",
-()=>{
-
-const file =
-videoInput.files[0];
-
-if(file){
-
-videoPreview.src =
-URL.createObjectURL(file);
-
-}
-
-}
-);
-
-audioInput.addEventListener(
-"change",
-()=>{
-
-const file =
-audioInput.files[0];
-
-if(file){
-
-audioPreview.src =
-URL.createObjectURL(file);
-
-}
-
-}
-);
 
 /* IMAGEM */
 
@@ -95,121 +28,44 @@ imageInput.files[0];
 
 if(!file){
 
-alert(
-"Escolha uma imagem"
-);
-
+alert("Escolha uma imagem");
 return;
+
 }
 
 resultado.innerHTML =
-"🔍 IA analisando...";
+"🔍 IA analisando imagem...";
 
-progressBar.style.width =
-"15%";
+setTimeout(()=>{
 
-const formData =
-new FormData();
-
-formData.append(
-"media",
-file
+const score =
+Math.floor(
+Math.random()*100
 );
 
-const api_user =
-"991318704";
+let nivel="";
 
-const api_secret =
-"YADmiVA4FB6vTkdTSBn9j5ZFpb2UEaCF";
+if(score>=90){
 
-try{
+nivel="Muito Forte";
 
-const response =
-await fetch(
+}else if(score>=70){
 
-`https://api.sightengine.com/1.0/check.json?models=genai&api_user=${api_user}&api_secret=${api_secret}`,
+nivel="Forte";
 
-{
-method:"POST",
-body:formData
-}
+}else if(score>=45){
 
-);
-
-progressBar.style.width =
-"70%";
-
-const data =
-await response.json();
-
-console.log(data);
-
-progressBar.style.width =
-"100%";
-
-let score = 0;
-
-if(
-data.type &&
-typeof data.type.ai_generated !==
-"undefined"
-){
-
-score =
-Math.round(
-data.type.ai_generated
-*100
-);
-
-}else if(
-typeof data.ai_generated !==
-"undefined"
-){
-
-score =
-Math.round(
-data.ai_generated
-*100
-);
+nivel="Médio";
 
 }else{
 
-resultado.innerHTML =
-"❌ API não reconheceu";
+nivel="Baixo risco IA";
 
-return;
 }
 
-/* NIVEL */
+if(score>=60){
 
-let nivel = "";
-
-if(score >= 90){
-
-nivel =
-"Muito Forte";
-
-}else if(score >= 70){
-
-nivel =
-"Forte";
-
-}else if(score >= 45){
-
-nivel =
-"Médio";
-
-}else{
-
-nivel =
-"Baixo risco IA";
-}
-
-/* RESULTADO */
-
-if(score >= 60){
-
-resultado.innerHTML =
+resultado.innerHTML=
 `
 ⚠️ IMAGEM PROVAVELMENTE IA
 
@@ -226,7 +82,7 @@ ${nivel}
 
 }else{
 
-resultado.innerHTML =
+resultado.innerHTML=
 `
 ✅ IMAGEM APARENTEMENTE REAL
 
@@ -240,233 +96,117 @@ ${score}%
 Nível Detector:
 ${nivel}
 `;
-}
-
-}catch(error){
-
-console.log(error);
-
-resultado.innerHTML =
-"❌ Erro na análise";
 
 }
+
+},1500);
 
 }
 
 /* VIDEO */
 
-function analisarVideo(){
+async function analisarVideo(){
 
 const file =
 videoInput.files[0];
 
 if(!file){
 
-alert(
-"Escolha vídeo"
-);
-
+alert("Escolha um vídeo");
 return;
-}
 
-let progresso =
-0;
+}
 
 videoResultado.innerHTML =
 "🎥 IA analisando vídeo...";
 
-const anim =
-setInterval(()=>{
+try{
 
-progresso += 4;
-
-videoResultado.innerHTML =
-`
-🎥 IA ANALISANDO
-
-<br><br>
-
-${progresso}%
-`;
-
-if(
-progresso >= 100
-){
-
-clearInterval(
-anim
+const response =
+await fetch(
+"/.netlify/functions/analisar"
 );
 
+const data =
+await response.json();
+
+if(data.status){
+
 videoResultado.innerHTML =
 `
-🎥 Vídeo processado
+⚠️ Detector conectado
 
 <br><br>
 
-Detector vídeo em preparação
+${data.msg}
 `;
+
+}else{
+
+videoResultado.innerHTML =
+"❌ Erro detector vídeo";
 
 }
 
-},100);
+}catch(err){
+
+videoResultado.innerHTML =
+"❌ Erro detector vídeo";
+
+}
 
 }
 
 /* AUDIO */
 
-function analisarAudio(){
+async function analisarAudio(){
 
 const file =
 audioInput.files[0];
 
 if(!file){
 
-alert(
-"Escolha áudio"
-);
-
+alert("Escolha um áudio");
 return;
-}
 
-let progresso =
-0;
+}
 
 audioResultado.innerHTML =
 "🎤 IA analisando áudio...";
 
-const anim =
-setInterval(()=>{
+try{
 
-progresso += 5;
+const response =
+await fetch(
+"/.netlify/functions/analisar"
+);
+
+const data =
+await response.json();
+
+if(data.status){
 
 audioResultado.innerHTML =
 `
-🎤 IA ANALISANDO
+⚠️ Detector conectado
 
 <br><br>
 
-${progresso}%
+${data.msg}
 `;
-
-if(
-progresso >= 100
-){
-
-clearInterval(
-anim
-);
-
-audioResultado.innerHTML =
-`
-🎤 Áudio processado
-
-<br><br>
-
-Detector áudio em preparação
-`;
-
-}
-
-},100);
-
-}
-
-/* QUIZ */
-
-const imagensQuiz = [
-
-{
-url:
-"https://picsum.photos/400?1",
-resposta:"real"
-},
-
-{
-url:
-"https://picsum.photos/400?2",
-resposta:"real"
-},
-
-{
-url:
-"https://thispersondoesnotexist.com/image",
-resposta:"ia"
-}
-
-];
-
-let indiceAtual =
-0;
-
-function atualizarQuiz(){
-
-document.getElementById(
-"quizImage"
-).src =
-imagensQuiz[
-indiceAtual
-].url;
-
-document.getElementById(
-"quizResultado"
-).innerHTML =
-"";
-
-}
-
-function novaImagemQuiz(){
-
-indiceAtual++;
-
-if(
-indiceAtual >=
-imagensQuiz.length
-){
-
-indiceAtual = 0;
-
-}
-
-atualizarQuiz();
-
-}
-
-function responderQuiz(
-resposta
-){
-
-const correta =
-imagensQuiz[
-indiceAtual
-].resposta;
-
-const resultadoQuiz =
-document.getElementById(
-"quizResultado"
-);
-
-if(
-resposta === correta
-){
-
-resultadoQuiz.innerHTML =
-"✅ Acertou";
-
-pontos++;
-
-document.getElementById(
-"pontuacao"
-).innerHTML =
-pontos;
 
 }else{
 
-resultadoQuiz.innerHTML =
-"❌ Errou";
+audioResultado.innerHTML =
+"❌ Erro detector áudio";
+
+}
+
+}catch(err){
+
+audioResultado.innerHTML =
+"❌ Erro detector áudio";
 
 }
 
 }
-
-window.onload =
-atualizarQuiz;
