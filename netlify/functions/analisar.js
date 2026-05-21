@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 exports.handler = async (event) => {
 
 return {
@@ -11,7 +13,7 @@ headers:{
 body:JSON.stringify({
 
 status:"online",
-msg:"Detector pronto"
+msg:"Detector Hive conectado"
 
 })
 
