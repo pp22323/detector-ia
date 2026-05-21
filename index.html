@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+DeepVision AI
+</title>
+
+<link
+rel="stylesheet"
+href="style.css"
+>
+
+</head>
+
+<body>
+
+<div class="bg-animation"></div>
+
+<header class="hero">
+
+<h1>
+DeepVision AI
+</h1>
+
+<p>
+Detector IA • Imagem • Vídeo • Áudio
+</p>
+
+</header>
+
+<div class="container">
+
+<!-- IMAGEM -->
+
+<div class="card">
+
+<h2>
+Detector de Imagem IA
+</h2>
+
+<p>
+Upload de imagem
+</p>
+
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+>
+
+<img
+id="preview"
+>
+
+<button
+onclick="analisarImagem()"
+>
+ANALISAR IMAGEM
+</button>
+
+<div class="progress">
+
+<div
+class="progress-bar"
+id="progressBar"
+></div>
+
+</div>
+
+<div id="resultado"></div>
+
+</div>
+
+<!-- VIDEO -->
+
+<div class="card">
+
+<h2>
+Detector de Vídeo
+</h2>
+
+<input
+type="file"
+id="videoInput"
+accept="video/*"
+>
+
+<video
+id="videoPreview"
+controls
+></video>
+
+<button
+onclick="analisarVideo()"
+>
+ANALISAR VÍDEO
+</button>
+
+<div id="videoResultado"></div>
+
+</div>
+
+<!-- AUDIO -->
+
+<div class="card">
+
+<h2>
+Detector de Áudio
+</h2>
+
+<input
+type="file"
+id="audioInput"
+accept="audio/*"
+>
+
+<audio
+id="audioPreview"
+controls
+></audio>
+
+<button
+onclick="analisarAudio()"
+>
+ANALISAR ÁUDIO
+</button>
+
+<div id="audioResultado"></div>
+
+</div>
+
+<!-- QUIZ -->
+
+<div class="card">
+
+<h2>
+Quiz IA
+</h2>
+
+<img
+id="quizImage"
+>
+
+<div class="quiz-buttons">
+
+<button
+onclick="responderQuiz('real')"
+>
+REAL
+</button>
+
+<button
+onclick="responderQuiz('ia')"
+>
+IA
+</button>
+
+<button
+onclick="novaImagemQuiz()"
+>
+PRÓXIMA
+</button>
+
+</div>
+
+<div id="quizResultado"></div>
+
+<div id="rankingQuiz">
+
+🏆 Acertos:
+
+<span id="pontuacao">
+0
+</span>
+
+</div>
+
+</div>
+
+<!-- QR -->
+
+<div class="card">
+
+<h2>
+QR Code
+</h2>
+
+<img
+src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://genuine-madeleine-d22fcb.netlify.app/"
+>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
