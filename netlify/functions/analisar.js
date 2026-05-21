@@ -1,14 +1,40 @@
+const axios = require("axios");
+
 exports.handler = async (event) => {
 
+try{
+
 return {
+
 statusCode:200,
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
-status:"online",
-msg:"Backend ativo"
+
+status:"hive_ready",
+msg:"Detector IA + Deepfake ativo"
+
 })
+
 };
+
+}catch(err){
+
+return {
+
+statusCode:500,
+
+body:JSON.stringify({
+
+erro:"Erro Hive"
+
+})
+
+};
+
+}
 
 };
