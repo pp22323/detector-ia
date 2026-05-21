@@ -132,9 +132,14 @@ await response.json();
 
 if(data.status){
 
-videoResultado.innerHTML =
+videoResultado.innerHTML=
 `
-⚠️ Detector conectado
+⚠️ ${data.tipo}
+
+<br><br>
+
+Chance IA:
+${data.score}%
 
 <br><br>
 
@@ -143,14 +148,14 @@ ${data.msg}
 
 }else{
 
-videoResultado.innerHTML =
+videoResultado.innerHTML=
 "❌ Erro detector vídeo";
 
 }
 
 }catch(err){
 
-videoResultado.innerHTML =
+videoResultado.innerHTML=
 "❌ Erro detector vídeo";
 
 }
@@ -186,9 +191,14 @@ await response.json();
 
 if(data.status){
 
-audioResultado.innerHTML =
+audioResultado.innerHTML=
 `
-⚠️ Detector conectado
+⚠️ ${data.tipo}
+
+<br><br>
+
+Chance IA:
+${data.score}%
 
 <br><br>
 
@@ -197,14 +207,14 @@ ${data.msg}
 
 }else{
 
-audioResultado.innerHTML =
+audioResultado.innerHTML=
 "❌ Erro detector áudio";
 
 }
 
 }catch(err){
 
-audioResultado.innerHTML =
+audioResultado.innerHTML=
 "❌ Erro detector áudio";
 
 }
