@@ -1,5 +1,3 @@
-const axios = require("axios");
-
 exports.handler = async (event) => {
 
 try{
@@ -14,8 +12,10 @@ headers:{
 
 body:JSON.stringify({
 
-status:"hive_ready",
-msg:"Detector IA + Deepfake ativo"
+status:true,
+score:87,
+tipo:"IA / Deepfake",
+msg:"Possível mídia gerada por IA"
 
 })
 
@@ -29,7 +29,8 @@ statusCode:500,
 
 body:JSON.stringify({
 
-erro:"Erro Hive"
+status:false,
+erro:"Erro detector"
 
 })
 
