@@ -1,53 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>
-DeepVision AI
-</title>
+<title>DeepVision IA — Detector de IA e Deepfake</title>
 
-<link
-rel="stylesheet"
-href="style.css"
->
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+
+body{
+margin:0;
+background:#0f172a;
+font-family:Arial;
+color:white;
+}
+
+header{
+background:#111827;
+padding:25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+.logo{
+font-size:30px;
+font-weight:bold;
+color:#00bfff;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:0 15px;
+font-size:15px;
+}
+
+.hero{
+padding:70px 30px;
+text-align:center;
+}
+
+.hero h1{
+font-size:55px;
+margin-bottom:10px;
+}
+
+.hero p{
+font-size:20px;
+color:#cbd5e1;
+max-width:800px;
+margin:auto;
+}
+
+.container{
+width:92%;
+max-width:1200px;
+margin:auto;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+
+.card h2{
+margin-top:0;
+margin-bottom:15px;
+}
+
+button{
+background:#00bfff;
+border:none;
+padding:14px 22px;
+border-radius:12px;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+input{
+width:100%;
+padding:12px;
+background:#0f172a;
+color:white;
+border:1px solid #334155;
+border-radius:12px;
+}
+
+#resultado,
+#videoResultado,
+#audioResultado{
+margin-top:20px;
+font-size:22px;
+font-weight:bold;
+}
+
+.info{
+margin-top:60px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.infoBox{
+background:#111827;
+padding:25px;
+border-radius:18px;
+}
+
+footer{
+margin-top:70px;
+background:#111827;
+padding:35px;
+text-align:center;
+color:#94a3b8;
+}
+
+</style>
 
 </head>
-
 <body>
 
-<div class="bg-animation"></div>
+<header>
 
-<header class="hero">
+<div class="logo">
+DeepVision IA
+</div>
 
-<h1>
-DeepVision AI
-</h1>
-
-<p>
-Detector IA • Imagem • Vídeo • Áudio
-</p>
+<nav>
+<a href="#">Início</a>
+<a href="#">Detector</a>
+<a href="#">Deepfake</a>
+<a href="#">Sobre</a>
+</nav>
 
 </header>
 
+<section class="hero">
+
+<h1>
+Detector IA & Deepfake
+</h1>
+
+<p>
+Plataforma experimental para análise de imagens, vídeos e áudios com tecnologia de detecção de inteligência artificial e deepfakes.
+</p>
+
+</section>
+
 <div class="container">
+
+<div class="grid">
 
 <!-- IMAGEM -->
 
 <div class="card">
 
 <h2>
-Detector de Imagem IA
+🖼️ Detector de Imagem
 </h2>
 
 <p>
-Upload de imagem
+Envie uma imagem para análise.
 </p>
 
 <input
@@ -56,24 +191,11 @@ id="imageInput"
 accept="image/*"
 >
 
-<img
-id="preview"
->
+<br><br>
 
-<button
-onclick="analisarImagem()"
->
+<button onclick="analisarImagem()">
 ANALISAR IMAGEM
 </button>
-
-<div class="progress">
-
-<div
-class="progress-bar"
-id="progressBar"
-></div>
-
-</div>
 
 <div id="resultado"></div>
 
@@ -84,8 +206,12 @@ id="progressBar"
 <div class="card">
 
 <h2>
-Detector de Vídeo
+🎥 Detector de Vídeo
 </h2>
+
+<p>
+Analise vídeos e possíveis deepfakes.
+</p>
 
 <input
 type="file"
@@ -93,14 +219,9 @@ id="videoInput"
 accept="video/*"
 >
 
-<video
-id="videoPreview"
-controls
-></video>
+<br><br>
 
-<button
-onclick="analisarVideo()"
->
+<button onclick="analisarVideo()">
 ANALISAR VÍDEO
 </button>
 
@@ -113,8 +234,12 @@ ANALISAR VÍDEO
 <div class="card">
 
 <h2>
-Detector de Áudio
+🎤 Detector de Áudio
 </h2>
+
+<p>
+Verifique vozes sintéticas e áudio IA.
+</p>
 
 <input
 type="file"
@@ -122,14 +247,9 @@ id="audioInput"
 accept="audio/*"
 >
 
-<audio
-id="audioPreview"
-controls
-></audio>
+<br><br>
 
-<button
-onclick="analisarAudio()"
->
+<button onclick="analisarAudio()">
 ANALISAR ÁUDIO
 </button>
 
@@ -137,69 +257,53 @@ ANALISAR ÁUDIO
 
 </div>
 
-<!-- QUIZ -->
-
-<div class="card">
-
-<h2>
-Quiz IA
-</h2>
-
-<img
-id="quizImage"
->
-
-<div class="quiz-buttons">
-
-<button
-onclick="responderQuiz('real')"
->
-REAL
-</button>
-
-<button
-onclick="responderQuiz('ia')"
->
-IA
-</button>
-
-<button
-onclick="novaImagemQuiz()"
->
-PRÓXIMA
-</button>
-
 </div>
 
-<div id="quizResultado"></div>
+<!-- INFO -->
 
-<div id="rankingQuiz">
+<div class="info">
 
-🏆 Acertos:
+<div class="infoBox">
+<h3>IA Generativa</h3>
+<p>
+Detecção de possíveis conteúdos produzidos por inteligência artificial.
+</p>
+</div>
 
-<span id="pontuacao">
-0
-</span>
+<div class="infoBox">
+<h3>Deepfake</h3>
+<p>
+Análise experimental de manipulação facial e mídia sintética.
+</p>
+</div>
+
+<div class="infoBox">
+<h3>Áudio IA</h3>
+<p>
+Detecção de voz clonada e conteúdo sintético.
+</p>
+</div>
+
+<div class="infoBox">
+<h3>Segurança</h3>
+<p>
+Sistema educativo e experimental para análise digital.
+</p>
+</div>
 
 </div>
 
 </div>
 
-<!-- QR -->
+<footer>
 
-<div class="card">
+DeepVision IA © 2026
 
-<h2>
-QR Code
-</h2>
+<br><br>
 
-<img
-src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://genuine-madeleine-d22fcb.netlify.app/"
->
+Detector experimental de mídia por IA.
 
-</div>
-
-</div>
+</footer>
 
 <script src="script.js"></script>
 
