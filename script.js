@@ -1,613 +1,653 @@
-// --- Configurações Gerais ---
-const body = document.body;
-const sectionDetectorImagem = document.getElementById('detector-imagem');
-const sectionDetectorAudio = document.getElementById('detector-audio');
-const sectionQuiz = document.getElementById('quiz-ia');
-const sectionDashboard = document.getElementById('dashboard');
-const uploadInput = document.getElementById('upload-input');
-const previewImagem = document.getElementById('preview-imagem');
-const botaoAnalisar = document.getElementById('botao-analisar');
-const loadingBar = document.getElementById('loading-bar');
-const resultadoDiv = document.getElementById('resultado-analise');
-const areaReconhecimentoVoz = document.getElementById('reconhecimento-voz');
-const botaoMicrofone = document.getElementById('botao-microfone');
-const textoReconhecido = document.getElementById('texto-reconhecido');
-const quizContainer = document.getElementById('quiz-container');
-const pontuacaoSpan = document.getElementById('pontuacao');
-const botaoReiniciarQuiz = document.getElementById('botao-reiniciar-quiz');
-const contadores = document.querySelectorAll('.contador-animado');
-const elementosFadeIn = document.querySelectorAll('.fade-in');
+// script.js
 
-let pontuacaoQuiz = 0;
-let perguntasQuiz = [];
-let indicePerguntaAtual = 0;
+// --- Variáveis Globais ---
+const fileInput = document.getElementById('fileInput');
+const previewContainer = document.getElementById('previewContainer');
+const uploadImage = document.getElementById('uploadImage');
+const fileNameDisplay = document.getElementById('fileName');
+const fileSizeDisplay = document.getElementById('fileSize');
+const analyzeButton = document.getElementById('analyzeButton');
+const resultContainer = document.getElementById('resultContainer');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const toastContainer = document.getElementById('toastContainer');
+const quizContainer = document.getElementById('quizContainer');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const restartQuizButton = document.getElementById('restartQuizButton');
 
-// --- Funções Utilitárias ---
+let currentImageFile = null;
+let currentAnalysisResult = null;
+let quizQuestions = [];
+let currentQuestionIndex = 0;
+let userScore = 0;
 
-function toastNotification(mensagem, tipo = 'info') {
-    const notificacoesContainer = document.getElementById('notificacoes-container');
-    if (!notificacoesContainer) return;
+// --- Funções de Utilidade ---
 
+/**
+ * Exibe uma mensagem toast com feedback visual.
+ * @param {string} message - A mensagem a ser exibida.
+ * @param {'success' | 'error' | 'info'} type - O tipo de mensagem (afeta a cor).
+ */
+function showToast(message, type = 'info') {
     const toast = document.createElement('div');
-    toast.classList.add('toast', tipo);
-    toast.textContent = mensagem;
-
-    notificacoesContainer.appendChild(toast);
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
 
     setTimeout(() => {
         toast.classList.add('show');
-    }, 100);
+    }, 10);
 
     setTimeout(() => {
         toast.classList.remove('show');
         toast.addEventListener('transitionend', () => {
             toast.remove();
         });
-    }, 5000);
+    }, 3000);
 }
 
-function animarContador(elemento, inicio, fim, duracao) {
-    let contador = 0;
-    const intervalo = duracao / (fim - inicio);
+/**
+ * Adiciona um efeito de fade-in a um elemento.
+ * @param {HTMLElement} element - O elemento a ser animado.
+ */
+function fadeInElement(element) {
+    element.style.opacity = '0';
+    element.style.display = 'block'; // Garante que o display esteja ativo para a transição
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            element.style.opacity = '1';
+        }, 20); // Pequeno delay para garantir que a opacidade inicial seja aplicada
+    });
 
-    function atualizarContador() {
-        if (contador < fim) {
-            contador++;
-            elemento.textContent = contador;
-            requestAnimationFrame(atualizarContador);
-        } else {
-            elemento.textContent = fim;
-        }
-    }
-    atualizarContador();
-}
-
-function aplicarFadeInScroll() {
-    elementosFadeIn.forEach(elemento => {
-        const posicao = elemento.getBoundingClientRect().top;
-        const alturaJanela = window.innerHeight;
-
-        if (posicao < alturaJanela - 50) {
-            elemento.classList.add('visible');
-        }
+    element.addEventListener('transitionend', () => {
+        element.style.opacity = ''; // Limpa o estilo para evitar conflitos
     });
 }
 
-function adicionarHoverEffects() {
-    const elementosHover = document.querySelectorAll('.hover-effect');
-    elementosHover.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            el.style.transform = 'scale(1.05)';
-            el.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
-        });
-        el.addEventListener('mouseleave', () => {
-            el.style.transform = 'scale(1)';
-            el.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-        });
-    });
+/**
+ * Adiciona um efeito de glow a um elemento.
+ * @param {HTMLElement} element - O elemento a ser animado.
+ */
+function addGlowEffect(element) {
+    element.classList.add('glow-effect');
+    element.addEventListener('animationend', () => {
+        element.classList.remove('glow-effect');
+    }, { once: true });
 }
 
-function gerarBackgroundAnimado() {
-    const canvas = document.createElement('canvas');
-    canvas.id = 'background-canvas';
-    body.insertBefore(canvas, body.firstChild);
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    const numParticles = 150;
-    const particleColor = '#00bfff'; // Azul Ciano
-    const particleRadius = 2;
-    const maxSpeed = 1;
-    const connectionDistance = 100;
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = particleRadius;
-            this.speedX = (Math.random() - 0.5) * maxSpeed;
-            this.speedY = (Math.random() - 0.5) * maxSpeed;
-        }
-
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            if (this.x + this.size > canvas.width || this.x - this.size < 0) {
-                this.speedX *= -1;
-            }
-            if (this.y + this.size > canvas.height || this.y - this.size < 0) {
-                this.speedY *= -1;
-            }
-
-            if (this.x > canvas.width) this.x = 0;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0;
-            if (this.y < 0) this.y = canvas.height;
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = particleColor;
-            ctx.fill();
-        }
-    }
-
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle());
-        }
-    }
-
-    function connectParticles() {
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < connectionDistance) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(0, 191, 255, ${1 - distance / connectionDistance})`;
-                    ctx.lineWidth = 1;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                }
-            }
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
+/**
+ * Exibe a barra de progresso animada.
+ * @param {number} duration - Duração da animação em milissegundos.
+ */
+function animateProgressBar(duration = 2000) {
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                progressBar.style.transition = `width ${duration}ms ease-in-out`;
+                progressBar.style.width = '100%';
+            }, 20);
         });
-        connectParticles();
-        requestAnimationFrame(animate);
+        return new Promise(resolve => {
+            setTimeout(resolve, duration);
+        });
     }
+    return Promise.resolve();
+}
 
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        initParticles();
+/**
+ * Cria um elemento de botão com microanimações.
+ * @param {string} text - O texto do botão.
+ * @param {Function} onClick - A função a ser chamada ao clicar.
+ * @param {string} className - Classes CSS adicionais para o botão.
+ * @returns {HTMLButtonElement} O elemento de botão criado.
+ */
+function createAnimatedButton(text, onClick, className = '') {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.className = `animated-button ${className}`;
+    button.addEventListener('click', onClick);
+
+    button.addEventListener('mouseenter', () => {
+        button.style.transform = 'scale(1.05)';
+        button.style.boxShadow = '0 0 15px rgba(100, 200, 255, 0.8)';
     });
 
-    initParticles();
-    animate();
+    button.addEventListener('mouseleave', () => {
+        button.style.transform = 'scale(1)';
+        button.style.boxShadow = 'none';
+    });
+
+    button.addEventListener('click', () => {
+        addGlowEffect(button);
+    });
+
+    return button;
 }
 
-function esconderTodosSementes() {
-    if (sectionDetectorImagem) sectionDetectorImagem.style.display = 'none';
-    if (sectionDetectorAudio) sectionDetectorAudio.style.display = 'none';
-    if (sectionQuiz) sectionQuiz.style.display = 'none';
-    if (sectionDashboard) sectionDashboard.style.display = 'none';
-}
+// --- Manipulação de Imagem e Preview ---
 
-function mostrarSeccao(seccao) {
-    esconderTodosSementes();
-    if (seccao) {
-        seccao.style.display = 'block';
-    }
-}
+/**
+ * Atualiza o preview da imagem selecionada.
+ * @param {File} file - O arquivo de imagem.
+ */
+function updateImagePreview(file) {
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadImage.src = e.target.result;
+            uploadImage.style.display = 'block';
+            previewContainer.style.display = 'block';
 
-// --- Detector de Imagem IA ---
+            // Exibe detalhes do arquivo
+            fileNameDisplay.textContent = file.name;
+            fileSizeDisplay.textContent = formatBytes(file.size);
+            document.getElementById('fileDetails').style.display = 'flex';
 
-function previewImagemUpload() {
-    const arquivo = uploadInput.files[0];
-    if (arquivo) {
-        const leitor = new FileReader();
-        leitor.onload = function(e) {
-            previewImagem.src = e.target.result;
-            previewImagem.style.display = 'block';
-            botaoAnalisar.disabled = false;
+            // Adiciona efeito de fade-in ao preview
+            fadeInElement(uploadImage);
         }
-        leitor.readAsDataURL(arquivo);
+        reader.readAsDataURL(file);
     } else {
-        previewImagem.src = '#';
-        previewImagem.style.display = 'none';
-        botaoAnalisar.disabled = true;
+        uploadImage.src = '#';
+        uploadImage.style.display = 'none';
+        fileNameDisplay.textContent = '';
+        fileSizeDisplay.textContent = '';
+        document.getElementById('fileDetails').style.display = 'none';
+        previewContainer.style.display = 'none';
     }
 }
 
-async function analisarImagem() {
-    if (!uploadInput.files || uploadInput.files.length === 0) {
-        toastNotification('Por favor, selecione uma imagem primeiro.', 'error');
+/**
+ * Formata o tamanho do arquivo em bytes para KB, MB, etc.
+ * @param {number} bytes - O tamanho em bytes.
+ * @param {number} decimals - O número de casas decimais.
+ * @returns {string} O tamanho formatado.
+ */
+function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+// --- Análise de Imagem ---
+
+/**
+ * Prepara o formulário para envio via FormData.
+ * @param {File} file - O arquivo de imagem.
+ * @returns {FormData} O objeto FormData.
+ */
+function createFormData(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    return formData;
+}
+
+/**
+ * Exibe o resultado da análise.
+ * @param {object} data - Os dados do resultado da análise.
+ */
+function displayAnalysisResult(data) {
+    resultContainer.innerHTML = ''; // Limpa resultados anteriores
+
+    const resultTitle = document.createElement('h3');
+    resultTitle.textContent = "Análise da Imagem:";
+    resultTitle.className = 'result-title';
+    resultContainer.appendChild(resultTitle);
+
+    if (data.error) {
+        const errorMsg = document.createElement('p');
+        errorMsg.textContent = `Erro na análise: ${data.error}`;
+        errorMsg.style.color = 'red';
+        resultContainer.appendChild(errorMsg);
+        showToast(`Análise falhou: ${data.error}`, 'error');
         return;
     }
 
-    const arquivo = uploadInput.files[0];
-    const formData = new FormData();
-    formData.append('imagem', arquivo);
+    if (data.predictions && data.predictions.length > 0) {
+        data.predictions.forEach(prediction => {
+            const predictionElement = document.createElement('div');
+            predictionElement.className = 'prediction-item';
 
-    loadingBar.style.width = '0%';
-    loadingBar.style.display = 'block';
-    botaoAnalisar.disabled = true;
-    resultadoDiv.innerHTML = '';
-    resultadoDiv.style.display = 'none';
+            const label = document.createElement('span');
+            label.textContent = `${prediction.label}: `;
+            label.className = 'prediction-label';
+
+            const value = document.createElement('span');
+            value.textContent = prediction.value.toFixed(2); // Assumindo que é um valor numérico
+            value.className = 'prediction-value';
+
+            predictionElement.appendChild(label);
+            predictionElement.appendChild(value);
+            resultContainer.appendChild(predictionElement);
+        });
+        fadeInElement(resultContainer);
+        showToast('Análise concluída com sucesso!', 'success');
+    } else {
+        const noResult = document.createElement('p');
+        noResult.textContent = 'Nenhuma predição encontrada.';
+        resultContainer.appendChild(noResult);
+        showToast('Análise concluída, mas sem resultados claros.', 'info');
+    }
+}
+
+/**
+ * Gerencia o estado de carregamento.
+ * @param {boolean} isLoading - Define se o carregamento está ativo.
+ */
+function setLoadingState(isLoading) {
+    if (isLoading) {
+        loadingOverlay.style.display = 'flex';
+        analyzeButton.disabled = true;
+        analyzeButton.classList.add('loading');
+        // Simula uma barra de progresso animada durante o carregamento
+        animateProgressBar(3000).then(() => {
+            if (isLoading) { // Verifica se o estado de loading ainda está ativo
+                // Adiciona um feedback visual de "processando" se a barra terminar
+                const processingIndicator = document.createElement('span');
+                processingIndicator.textContent = 'IA Analisando...';
+                processingIndicator.id = 'processingIndicator';
+                processingIndicator.style.animation = 'blink 1s infinite';
+                analyzeButton.appendChild(processingIndicator);
+            }
+        });
+    } else {
+        loadingOverlay.style.display = 'none';
+        analyzeButton.disabled = false;
+        analyzeButton.classList.remove('loading');
+        const processingIndicator = document.getElementById('processingIndicator');
+        if (processingIndicator) {
+            processingIndicator.remove();
+        }
+    }
+}
+
+/**
+ * Realiza a análise da imagem via fetch.
+ */
+async function analyzeImage() {
+    if (!currentImageFile) {
+        showToast("Por favor, selecione uma imagem primeiro.", "error");
+        return;
+    }
+
+    setLoadingState(true);
+    resultContainer.innerHTML = ''; // Limpa resultados anteriores
+    document.getElementById('fileDetails').style.display = 'none'; // Esconde detalhes durante análise
 
     try {
+        const formData = createFormData(currentImageFile);
         const response = await fetch("/api/analisar", {
             method: "POST",
-            body: formData
+            body: formData,
         });
 
-        // Simula o progresso da loading bar
-        let progresso = 0;
-        const intervaloProgresso = setInterval(() => {
-            progresso += Math.random() * 5 + 5;
-            if (progresso >= 100) {
-                progresso = 100;
-                clearInterval(intervaloProgresso);
-                loadingBar.style.width = '100%';
-            }
-            loadingBar.style.width = `${progresso}%`;
-        }, 150);
-
         if (!response.ok) {
-            const erro = await response.json();
-            throw new Error(erro.message || 'Erro ao analisar imagem.');
+            const errorData = await response.json().catch(() => ({})); // Tenta obter JSON, senão {}
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        const resultado = await response.json();
-        clearInterval(intervaloProgresso); // Garante que a animação pare
-        loadingBar.style.width = '100%';
-        setTimeout(() => {
-            loadingBar.style.display = 'none';
-            exibirResultadoImagem(resultado);
-        }, 500);
-
+        const data = await response.json();
+        currentAnalysisResult = data;
+        displayAnalysisResult(data);
 
     } catch (error) {
-        console.error("Erro na análise da imagem:", error);
-        toastNotification(`Falha na análise: ${error.message}`, 'error');
-        clearInterval(intervaloProgresso); // Garante que a animação pare em caso de erro
-        loadingBar.style.display = 'none';
-        botaoAnalisar.disabled = false;
-        resultadoDiv.innerHTML = `<p class="erro">Ocorreu um erro: ${error.message}</p>`;
-        resultadoDiv.style.display = 'block';
+        console.error("Erro ao analisar imagem:", error);
+        displayAnalysisResult({ error: error.message });
+        showToast(`Falha na análise: ${error.message}`, 'error');
+    } finally {
+        setLoadingState(false);
+        // Atualiza o estado do detector de imagem para "IA Analisando" e depois sucesso/erro
+        updateImageDetectorState(currentAnalysisResult ? (currentAnalysisResult.error ? 'error' : 'success') : 'error');
     }
 }
 
-function exibirResultadoImagem(resultado) {
-    resultadoDiv.innerHTML = ''; // Limpa resultados anteriores
-    if (resultado.descricao) {
-        const pDescricao = document.createElement('p');
-        pDescricao.textContent = `Descrição: ${resultado.descricao}`;
-        resultadoDiv.appendChild(pDescricao);
-    }
-    if (resultado.confianca) {
-        const pConfianca = document.createElement('p');
-        pConfianca.textContent = `Confiança: ${resultado.confianca.toFixed(2)}%`;
-        resultadoDiv.appendChild(pConfianca);
-    }
-    if (resultado.tipo && resultado.tipo !== 'desconhecido') {
-         const pTipo = document.createElement('p');
-         pTipo.textContent = `Detectado como: ${resultado.tipo}`;
-         resultadoDiv.appendChild(pTipo);
-    } else if (resultado.tipo === 'desconhecido') {
-         const pTipo = document.createElement('p');
-         pTipo.textContent = `Não foi possível determinar o tipo com certeza.`;
-         resultadoDiv.appendChild(pTipo);
-    }
+/**
+ * Atualiza o estado visual do detector de imagem.
+ * @param {'idle' | 'uploading' | 'analyzing' | 'success' | 'error'} state - O estado atual.
+ */
+function updateImageDetectorState(state) {
+    const detectorElement = document.getElementById('imageDetector');
+    const progressContainer = document.getElementById('progressBarContainer');
+    const statusMessage = document.getElementById('statusMessage');
 
-    resultadoDiv.style.display = 'block';
-    botaoAnalisar.disabled = false;
-    toastNotification('Análise concluída!', 'success');
+    // Reseta estilos
+    detectorElement.className = 'image-detector-container';
+    statusMessage.textContent = '';
+    progressContainer.style.display = 'none';
+
+    switch (state) {
+        case 'uploading':
+            statusMessage.textContent = 'Carregando imagem...';
+            break;
+        case 'analyzing':
+            statusMessage.textContent = 'IA Analisando...';
+            progressContainer.style.display = 'block';
+            animateProgressBar(3000); // Inicia a barra de progresso
+            break;
+        case 'success':
+            statusMessage.textContent = 'Análise Concluída!';
+            detectorElement.classList.add('state-success');
+            addGlowEffect(detectorElement); // Efeito glow no sucesso
+            break;
+        case 'error':
+            statusMessage.textContent = 'Erro na Análise!';
+            detectorElement.classList.add('state-error');
+            showToast('Ocorreu um erro durante a análise.', 'error');
+            break;
+        case 'idle':
+        default:
+            // Estado inicial ou após erro/limpeza
+            break;
+    }
 }
 
-// --- Detector de Áudio ---
+// --- Quiz ---
 
-let reconhecimentoVoz = null;
-let gravando = false;
+/**
+ * Carrega as perguntas do quiz.
+ */
+async function loadQuizQuestions() {
+    // Em um cenário real, isso viria de uma API ou arquivo JSON.
+    // Aqui, simulamos com dados estáticos e pegamos as imagens do diretório /images/quiz/
+    const imageUrls = Array.from({ length: 20 }, (_, i) => `/images/quiz/image_${i + 1}.jpg`); // Assumindo nomes sequenciais
+    const questionTexts = [
+        "Qual destes animais é um felino?",
+        "Identifique a fruta:",
+        "Qual destes é um meio de transporte?",
+        "Qual destes é um instrumento musical?",
+        "Qual destes é um objeto de cozinha?",
+        "Identifique o tipo de construção:",
+        "Qual destes é um elemento da natureza?",
+        "Qual destes é um acessório de vestuário?",
+        "Identifique o inseto:",
+        "Qual destes é um esporte?",
+        "Qual destes é um móvel?",
+        "Identifique a bebida:",
+        "Qual destes é um mamífero marinho?",
+        "Qual destes é um objeto de escritório?",
+        "Identifique o tipo de flor:",
+        "Qual destes é um ponto turístico?",
+        "Qual destes é um eletrodoméstico?",
+        "Identifique o veículo:",
+        "Qual destes é um órgão do corpo humano?",
+        "Qual destes é um corpo celeste?"
+    ];
 
-function iniciarReconhecimentoVoz() {
-    if (!suportaSpeech) {
-        toastNotification("Seu navegador não suporta reconhecimento de voz.", "warning");
+    if (imageUrls.length !== questionTexts.length) {
+        console.error("Erro: Número de imagens e textos de pergunta do quiz não correspondem.");
+        return [];
+    }
+
+    quizQuestions = [];
+    for (let i = 0; i < questionTexts.length; i++) {
+        const options = [];
+        // Adiciona a imagem correta e mais 3 incorretas aleatoriamente
+        const correctImageIndex = i;
+        options.push(imageUrls[correctImageIndex]);
+
+        // Garante que pegamos imagens diferentes e que não adicionamos a correta de novo
+        while (options.length < 4) {
+            const randomIndex = Math.floor(Math.random() * imageUrls.length);
+            if (!options.includes(imageUrls[randomIndex])) {
+                options.push(imageUrls[randomIndex]);
+            }
+        }
+
+        // Embaralha as opções
+        options.sort(() => Math.random() - 0.5);
+
+        quizQuestions.push({
+            question: questionTexts[i],
+            options: options,
+            correctAnswer: imageUrls[correctImageIndex]
+        });
+    }
+    // Embaralha as perguntas também
+    quizQuestions.sort(() => Math.random() - 0.5);
+    return quizQuestions;
+}
+
+/**
+ * Renderiza a pergunta atual do quiz.
+ */
+function renderQuizQuestion() {
+    if (currentQuestionIndex >= quizQuestions.length) {
+        displayQuizResult();
         return;
     }
 
-    if (reconhecimentoVoz === null) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        reconhecimentoVoz = new SpeechRecognition();
-        reconhecimentoVoz.continuous = false;
-        reconhecimentoVoz.lang = 'pt-BR';
-        reconhecimentoVoz.interimResults = false;
-        reconhecimentoVoz.maxAlternatives = 1;
+    const questionData = quizQuestions[currentQuestionIndex];
+    quizContainer.innerHTML = ''; // Limpa a pergunta anterior
 
-        reconhecimentoVoz.onresult = (event) => {
-            const ultimoResultado = event.results[event.results.length - 1][0].transcript;
-            textoReconhecido.textContent = ultimoResultado;
-            toastNotification('Áudio recebido!', 'success');
-            // Aqui você pode adicionar a lógica para enviar o áudio para análise, se necessário
-            // fetch("/api/analisar-audio", { method: "POST", body: JSON.stringify({ audio: ultimoResultado }) });
-        };
+    const questionElement = document.createElement('div');
+    questionElement.className = 'quiz-question';
 
-        reconhecimentoVoz.onspeechend = () => {
-            botaoMicrofone.classList.remove('gravando');
-            gravando = false;
-            toastNotification('Parou de gravar.', 'info');
-        };
+    const questionText = document.createElement('h3');
+    questionText.textContent = questionData.question;
+    questionElement.appendChild(questionText);
 
-        reconhecimentoVoz.onstart = () => {
-            gravando = true;
-            botaoMicrofone.classList.add('gravando');
-            toastNotification('Gravando...', 'info');
-        };
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'quiz-options';
 
-        reconhecimentoVoz.onerror = (event) => {
-            console.error("Erro no reconhecimento de voz:", event.error);
-            toastNotification(`Erro no microfone: ${event.error}`, 'error');
-            gravando = false;
-            botaoMicrofone.classList.remove('gravando');
-        };
-    }
+    questionData.options.forEach(imageUrl => {
+        const optionButton = document.createElement('button');
+        optionButton.className = 'quiz-option-button';
+        optionButton.style.backgroundImage = `url('${imageUrl}')`;
+        optionButton.dataset.imageUrl = imageUrl;
 
-    if (!gravando) {
-        reconhecimentoVoz.start();
-    } else {
-        reconhecimentoVoz.stop();
-    }
-}
-
-// --- Quiz Real ou IA ---
-
-function carregarPerguntasQuiz() {
-    perguntasQuiz = [
-        {
-            imagem: 'img/quiz/1_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/2_ia.jpg',
-            resposta: 'ia'
-        },
-         {
-            imagem: 'img/quiz/3_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/4_ia.jpg',
-            resposta: 'ia'
-        },
-        {
-            imagem: 'img/quiz/5_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/6_ia.jpg',
-            resposta: 'ia'
-        },
-         {
-            imagem: 'img/quiz/7_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/8_ia.jpg',
-            resposta: 'ia'
-        },
-        {
-            imagem: 'img/quiz/9_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/10_ia.jpg',
-            resposta: 'ia'
-        },
-         {
-            imagem: 'img/quiz/11_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/12_ia.jpg',
-            resposta: 'ia'
-        },
-        {
-            imagem: 'img/quiz/13_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/14_ia.jpg',
-            resposta: 'ia'
-        },
-        {
-            imagem: 'img/quiz/15_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/16_ia.jpg',
-            resposta: 'ia'
-        },
-         {
-            imagem: 'img/quiz/17_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/18_ia.jpg',
-            resposta: 'ia'
-        },
-        {
-            imagem: 'img/quiz/19_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/20_ia.jpg',
-            resposta: 'ia'
-        },
-         {
-            imagem: 'img/quiz/21_real.jpg',
-            resposta: 'real'
-        },
-        {
-            imagem: 'img/quiz/22_ia.jpg',
-            resposta: 'ia'
-        }
-    ];
-    // Embaralha as perguntas
-    for (let i = perguntasQuiz.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [perguntasQuiz[i], perguntasQuiz[j]] = [perguntasQuiz[j], perguntasQuiz[i]];
-    }
-    indicePerguntaAtual = 0;
-    pontuacaoQuiz = 0;
-    pontuacaoSpan.textContent = pontuacaoQuiz;
-}
-
-function mostrarPerguntaQuiz() {
-    if (indicePerguntaAtual < perguntasQuiz.length) {
-        const pergunta = perguntasQuiz[indicePerguntaAtual];
-        const quizImagem = document.getElementById('quiz-imagem');
-        const botoesResposta = document.querySelectorAll('.botao-resposta');
-
-        quizImagem.src = pergunta.imagem;
-        botoesResposta.forEach(botao => {
-            botao.onclick = () => verificarResposta(botao.dataset.resposta === pergunta.resposta);
-            botao.disabled = false;
-            botao.classList.remove('correta', 'incorreta');
-        });
-        quizContainer.style.animation = 'fadeIn 0.5s ease-in-out';
-        setTimeout(() => {
-             quizContainer.style.animation = '';
-        }, 500);
-    } else {
-        mostrarResultadoQuiz();
-    }
-}
-
-function verificarResposta(acertou) {
-    const botoesResposta = document.querySelectorAll('.botao-resposta');
-    botoesResposta.forEach(botao => {
-        botao.disabled = true;
-        const respostaCorreta = perguntasQuiz[indicePerguntaAtual].resposta;
-        if (botao.dataset.resposta === respostaCorreta) {
-            botao.classList.add('correta');
-        } else {
-            botao.classList.add('incorreta');
-        }
+        optionButton.addEventListener('click', () => handleQuizAnswer(optionButton, imageUrl, questionData.correctAnswer));
+        optionsContainer.appendChild(optionButton);
     });
 
-    if (acertou) {
-        pontuacaoQuiz++;
-        pontuacaoSpan.textContent = pontuacaoQuiz;
-        toastNotification('Correto!', 'success');
+    questionElement.appendChild(optionsContainer);
+    quizContainer.appendChild(questionElement);
+    fadeInElement(quizContainer);
+}
+
+/**
+ * Lida com a resposta do usuário a uma pergunta do quiz.
+ * @param {HTMLButtonElement} selectedButton - O botão clicado pelo usuário.
+ * @param {string} selectedImageUrl - A URL da imagem selecionada.
+ * @param {string} correctAnswerUrl - A URL da resposta correta.
+ */
+function handleQuizAnswer(selectedButton, selectedImageUrl, correctAnswerUrl) {
+    const optionButtons = quizContainer.querySelectorAll('.quiz-option-button');
+    optionButtons.forEach(btn => btn.disabled = true); // Desabilita todos os botões para evitar cliques múltiplos
+
+    let isCorrect = false;
+    if (selectedImageUrl === correctAnswerUrl) {
+        userScore++;
+        selectedButton.classList.add('correct');
+        showToast('Correto!', 'success');
+        isCorrect = true;
     } else {
-        toastNotification('Incorreto.', 'error');
-    }
-
-    indicePerguntaAtual++;
-    setTimeout(mostrarPerguntaQuiz, 1500);
-}
-
-function mostrarResultadoQuiz() {
-    const quizResultado = document.getElementById('quiz-resultado');
-    const pontuacaoFinal = document.getElementById('pontuacao-final');
-    pontuacaoFinal.textContent = `${pontuacaoQuiz} de ${perguntasQuiz.length}`;
-    quizResultado.style.display = 'block';
-    quizResultado.style.animation = 'fadeIn 0.5s ease-in-out';
-    toastNotification(`Quiz finalizado! Sua pontuação: ${pontuacaoQuiz}/${perguntasQuiz.length}`, 'info');
-}
-
-function reiniciarQuiz() {
-    carregarPerguntasQuiz();
-    document.getElementById('quiz-resultado').style.display = 'none';
-    mostrarPerguntaQuiz();
-    toastNotification('Quiz reiniciado!', 'info');
-}
-
-// --- Dashboard Animado ---
-
-function animarDashboard() {
-    contadores.forEach(contador => {
-        const valorFinal = parseInt(contador.dataset.valor);
-        if (valorFinal) {
-            animarContador(contador, 0, valorFinal, 2000);
-        }
-    });
-}
-
-// --- Inicialização ---
-
-function inicializar() {
-    // Event Listeners
-    if (uploadInput && sectionDetectorImagem) {
-        uploadInput.addEventListener('change', previewImagemUpload);
-        botaoAnalisar.addEventListener('click', analisarImagem);
-        botaoAnalisar.disabled = true; // Começa desabilitado
-    }
-
-    if (botaoMicrofone && sectionDetectorAudio) {
-        botaoMicrofone.addEventListener('click', iniciarReconhecimentoVoz);
-    }
-
-    if (botaoReiniciarQuiz && sectionQuiz) {
-        botaoReiniciarQuiz.addEventListener('click', reiniciarQuiz);
-    }
-
-    window.addEventListener('scroll', aplicarFadeInScroll);
-
-    // Navegação entre seções (Exemplo - pode ser adaptado para botões reais)
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const seccaoId = link.getAttribute('href');
-            const seccao = document.querySelector(seccaoId);
-            if (seccao) {
-                mostrarSeccao(seccao);
-                // Animações específicas ao mostrar seções
-                if (seccaoId === '#dashboard') {
-                    animarDashboard();
-                }
-                if (seccaoId === '#quiz-ia') {
-                    if (perguntasQuiz.length === 0) {
-                         carregarPerguntasQuiz();
-                    }
-                     mostrarPerguntaQuiz();
-                }
-                if (seccaoId === '#detector-imagem') {
-                    if (previewImagem.src && previewImagem.src !== '#') {
-                         botaoAnalisar.disabled = false;
-                    }
-                }
-                 if (seccaoId === '#detector-audio') {
-                    if (suportaSpeech && reconhecimentoVoz && gravando) {
-                        // Se já estava gravando, para a animação visual do botão
-                       botaoMicrofone.classList.remove('gravando');
-                       gravando = false;
-                       reconhecimentoVoz.stop();
-                    }
-                }
+        selectedButton.classList.add('incorrect');
+        showToast('Incorreto.', 'error');
+        // Destaca a resposta correta
+        optionButtons.forEach(btn => {
+            if (btn.dataset.imageUrl === correctAnswerUrl) {
+                btn.classList.add('correct');
             }
         });
-    });
+    }
 
-    // Inicializa estado dos botões e previews
-    previewImagemUpload(); // Para garantir que o estado inicial esteja correto
+    // Feedback visual
+    setTimeout(() => {
+        selectedButton.classList.add('answered');
+        if (isCorrect) {
+            addGlowEffect(selectedButton);
+        } else {
+            selectedButton.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.7)';
+        }
+    }, 500);
 
-    // Chama as funções de inicialização
-    aplicarFadeInScroll();
-    adicionarHoverEffects();
-    gerarBackgroundAnimado(); // Adiciona o background animado
-    if (sectionQuiz) carregarPerguntasQuiz(); // Carrega as perguntas do quiz no início
-     if (sectionDashboard) animarDashboard(); // Tenta animar o dashboard se já estiver visível
-
-    toastNotification('DeepVision IA carregado!', 'info');
+    currentQuestionIndex++;
+    setTimeout(() => {
+        if (currentQuestionIndex < quizQuestions.length) {
+            renderQuizQuestion();
+        } else {
+            displayQuizResult();
+        }
+    }, 2000); // Espera um pouco para o feedback visual
 }
 
-// Chama a função de inicialização principal
-inicializar();
+/**
+ * Exibe o resultado final do quiz.
+ */
+function displayQuizResult() {
+    quizContainer.innerHTML = '';
+    const resultElement = document.createElement('div');
+    resultElement.className = 'quiz-result';
 
-// Adiciona um listener para garantir que o background se ajuste ao redimensionar
-window.addEventListener('resize', () => {
-    const canvas = document.getElementById('background-canvas');
-    if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    const title = document.createElement('h3');
+    title.textContent = 'Quiz Finalizado!';
+    resultElement.appendChild(title);
+
+    const scoreMessage = document.createElement('p');
+    scoreMessage.textContent = `Sua pontuação: ${userScore} de ${quizQuestions.length}`;
+    resultElement.appendChild(scoreMessage);
+
+    // Feedback visual baseado na pontuação
+    if (userScore === quizQuestions.length) {
+        scoreMessage.style.color = 'green';
+        scoreMessage.style.fontWeight = 'bold';
+        showToast('Excelente! Você acertou tudo!', 'success');
+    } else if (userScore >= quizQuestions.length / 2) {
+        scoreMessage.style.color = 'orange';
+        showToast('Bom trabalho!', 'info');
+    } else {
+        scoreMessage.style.color = 'red';
+        showToast('Continue tentando!', 'error');
     }
-     aplicarFadeInScroll(); // Reavalia elementos fade-in após redimensionamento
+
+    // Botão de reiniciar
+    restartQuizButton.style.display = 'block';
+    fadeInElement(restartQuizButton);
+
+    resultElement.appendChild(restartQuizButton);
+    quizContainer.appendChild(resultElement);
+    fadeInElement(quizContainer);
+}
+
+/**
+ * Reinicia o quiz.
+ */
+function restartQuiz() {
+    userScore = 0;
+    currentQuestionIndex = 0;
+    scoreDisplay.textContent = `Pontuação: 0/${quizQuestions.length}`;
+    restartQuizButton.style.display = 'none';
+    loadQuizQuestions().then(questions => {
+        if (questions.length > 0) {
+            renderQuizQuestion();
+        }
+    });
+}
+
+/**
+ * Inicializa o quiz.
+ */
+async function initializeQuiz() {
+    await loadQuizQuestions();
+    if (quizQuestions.length > 0) {
+        scoreDisplay.textContent = `Pontuação: 0/${quizQuestions.length}`;
+        scoreDisplay.style.display = 'block';
+        quizContainer.style.display = 'block';
+        renderQuizQuestion();
+        fadeInElement(quizContainer);
+    } else {
+        quizContainer.innerHTML = '<p>Não foi possível carregar as perguntas do quiz.</p>';
+        quizContainer.style.display = 'block';
+    }
+}
+
+// --- Inicialização e Event Listeners ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Esconde elementos que serão exibidos dinamicamente
+    previewContainer.style.display = 'none';
+    resultContainer.innerHTML = '';
+    resultContainer.style.display = 'none';
+    loadingOverlay.style.display = 'none';
+    toastContainer.style.display = 'block'; // O container de toast é sempre visível
+    quizContainer.style.display = 'none';
+    scoreDisplay.style.display = 'none';
+    restartQuizButton.style.display = 'none';
+    document.getElementById('fileDetails').style.display = 'none';
+
+
+    // Manipulador para o input de arquivo
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        currentImageFile = file;
+        if (file) {
+            updateImagePreview(file);
+            resultContainer.style.display = 'none'; // Esconde resultado anterior ao trocar imagem
+            document.getElementById('fileDetails').style.display = 'flex'; // Mostra detalhes
+            updateImageDetectorState('uploading'); // Atualiza estado do detector
+            // Simula o fim do carregamento
+            setTimeout(() => updateImageDetectorState('idle'), 1000);
+        } else {
+            updateImagePreview(null);
+            updateImageDetectorState('idle');
+        }
+    });
+
+    // Adiciona evento de drag-and-drop para o input de arquivo
+    const dropZone = document.getElementById('dropZone');
+    if (dropZone) {
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files; // Atribui os arquivos ao input
+                fileInput.dispatchEvent(new Event('change')); // Dispara o evento change
+            }
+        });
+    }
+
+    // Manipulador para o botão ANALISAR
+    analyzeButton.addEventListener('click', () => {
+        updateImageDetectorState('analyzing'); // Mostra "IA Analisando" e barra de progresso
+        analyzeImage().then(() => {
+            // O estado de success/error é definido dentro de analyzeImage
+        });
+    });
+
+    // Botão para iniciar o quiz
+    const startQuizButton = document.getElementById('startQuizButton');
+    if (startQuizButton) {
+        startQuizButton.addEventListener('click', () => {
+            document.getElementById('mainDashboard').style.display = 'none'; // Esconde dashboard principal
+            fadeInElement(quizContainer); // Mostra container do quiz
+            initializeQuiz();
+        });
+    }
+
+    // Botão de reiniciar quiz
+    restartQuizButton.addEventListener('click', restartQuiz);
+
+    // Configuração inicial de UX - Efeitos de fade-in
+    document.querySelectorAll('.fade-in-element').forEach(fadeInElement);
+
+    // Cria e adiciona um botão de análise animado (exemplo)
+    const customAnalyzeButton = createAnimatedButton("Analisar Imagem", analyzeImage, "custom-analyze-btn");
+    // Substitui o botão original ou adiciona em outro lugar se preferir
+    // analyzeButton.parentNode.replaceChild(customAnalyzeButton, analyzeButton);
+
+    // Inicializa o quiz (se houver um botão para iniciá-lo)
+    // initializeQuiz(); // Descomente se quiser carregar o quiz imediatamente
 });
