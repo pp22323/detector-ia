@@ -3,34 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>DeepVision IA — Detector de IA e Deepfake</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>DeepVision IA</title>
 
 <style>
 
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
 background:#0f172a;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 color:white;
+overflow-x:hidden;
 }
 
 header{
 background:#111827;
-padding:25px;
+padding:20px 8%;
 display:flex;
 justify-content:space-between;
 align-items:center;
+position:sticky;
+top:0;
+z-index:1000;
 box-shadow:0 0 20px rgba(0,0,0,.4);
 }
 
 .logo{
-font-size:30px;
+font-size:32px;
 font-weight:bold;
 color:#00bfff;
 }
@@ -38,50 +41,86 @@ color:#00bfff;
 nav a{
 color:white;
 text-decoration:none;
-margin:0 15px;
+margin-left:20px;
 font-size:15px;
+transition:.3s;
+}
+
+nav a:hover{
+color:#00bfff;
 }
 
 .hero{
-padding:70px 30px;
+padding:90px 8%;
 text-align:center;
+background:
+linear-gradient(
+180deg,
+#111827 0%,
+#0f172a 100%
+);
 }
 
 .hero h1{
-font-size:55px;
-margin-bottom:10px;
+font-size:62px;
+margin-bottom:15px;
 }
 
 .hero p{
 font-size:20px;
 color:#cbd5e1;
-max-width:800px;
+max-width:900px;
 margin:auto;
+line-height:1.7;
+}
+
+.hero button{
+margin-top:30px;
 }
 
 .container{
 width:92%;
-max-width:1200px;
+max-width:1300px;
 margin:auto;
+padding-bottom:70px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:25px;
-margin-top:40px;
+grid-template-columns:
+repeat(auto-fit,minmax(350px,1fr));
+gap:30px;
+margin-top:50px;
 }
 
 .card{
 background:#1e293b;
 padding:30px;
-border-radius:20px;
+border-radius:22px;
 box-shadow:0 0 20px rgba(0,0,0,.3);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-4px);
 }
 
 .card h2{
-margin-top:0;
-margin-bottom:15px;
+margin-bottom:12px;
+}
+
+.card p{
+color:#cbd5e1;
+}
+
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#0f172a;
+color:white;
+border:1px solid #334155;
 }
 
 button{
@@ -99,46 +138,98 @@ button:hover{
 transform:scale(1.05);
 }
 
-input{
-width:100%;
-padding:12px;
-background:#0f172a;
-color:white;
-border:1px solid #334155;
-border-radius:12px;
-}
-
 #resultado,
-#videoResultado,
-#audioResultado{
+#audioResultado,
+#quizResultado{
 margin-top:20px;
 font-size:22px;
 font-weight:bold;
 }
 
-.info{
-margin-top:60px;
+.stats{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
 gap:20px;
+margin-top:60px;
 }
 
-.infoBox{
+.statBox{
+background:#111827;
+padding:35px;
+border-radius:20px;
+text-align:center;
+}
+
+.statBox h2{
+font-size:45px;
+color:#00bfff;
+margin-bottom:10px;
+}
+
+.features{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:60px;
+}
+
+.feature{
+background:#111827;
+padding:25px;
+border-radius:18px;
+}
+
+.feature h3{
+margin-bottom:10px;
+}
+
+.quizSection{
+margin-top:50px;
+}
+
+.faq{
+margin-top:60px;
+}
+
+.faqItem{
+background:#111827;
+padding:25px;
+border-radius:18px;
+margin-bottom:15px;
+}
+
+.testimonials{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+margin-top:50px;
+}
+
+.testimonial{
 background:#111827;
 padding:25px;
 border-radius:18px;
 }
 
 footer{
-margin-top:70px;
 background:#111827;
-padding:35px;
+padding:45px;
 text-align:center;
 color:#94a3b8;
+margin-top:80px;
+}
+
+img{
+width:100%;
+max-width:420px;
+border-radius:18px;
+margin-top:15px;
 }
 
 </style>
-
 </head>
 <body>
 
@@ -151,8 +242,8 @@ DeepVision IA
 <nav>
 <a href="#">Início</a>
 <a href="#">Detector</a>
-<a href="#">Deepfake</a>
-<a href="#">Sobre</a>
+<a href="#">Quiz</a>
+<a href="#">FAQ</a>
 </nav>
 
 </header>
@@ -160,12 +251,16 @@ DeepVision IA
 <section class="hero">
 
 <h1>
-Detector IA & Deepfake
+DeepVision IA
 </h1>
 
 <p>
-Plataforma experimental para análise de imagens, vídeos e áudios com tecnologia de detecção de inteligência artificial e deepfakes.
+Plataforma experimental de análise digital para detecção de mídia gerada por inteligência artificial, áudio sintético e deepfakes.
 </p>
+
+<button>
+Explorar Plataforma
+</button>
 
 </section>
 
@@ -185,6 +280,8 @@ Plataforma experimental para análise de imagens, vídeos e áudios com tecnolog
 Envie uma imagem para análise.
 </p>
 
+<br>
+
 <input
 type="file"
 id="imageInput"
@@ -201,34 +298,6 @@ ANALISAR IMAGEM
 
 </div>
 
-<!-- VIDEO -->
-
-<div class="card">
-
-<h2>
-🎥 Detector de Vídeo
-</h2>
-
-<p>
-Analise vídeos e possíveis deepfakes.
-</p>
-
-<input
-type="file"
-id="videoInput"
-accept="video/*"
->
-
-<br><br>
-
-<button onclick="analisarVideo()">
-ANALISAR VÍDEO
-</button>
-
-<div id="videoResultado"></div>
-
-</div>
-
 <!-- AUDIO -->
 
 <div class="card">
@@ -238,8 +307,10 @@ ANALISAR VÍDEO
 </h2>
 
 <p>
-Verifique vozes sintéticas e áudio IA.
+Analise voz e áudio IA.
 </p>
+
+<br>
 
 <input
 type="file"
@@ -259,35 +330,146 @@ ANALISAR ÁUDIO
 
 </div>
 
-<!-- INFO -->
+<!-- QUIZ -->
 
-<div class="info">
+<div class="card quizSection">
 
-<div class="infoBox">
+<h2>
+🧠 Quiz — Real ou IA?
+</h2>
+
+<p>
+Tente descobrir se a imagem é real ou gerada por IA.
+</p>
+
+<img
+id="quizImage"
+src="https://thispersondoesnotexist.com/"
+>
+
+<br><br>
+
+<button onclick="responder('real')">
+REAL
+</button>
+
+<button onclick="responder('ia')">
+GERADO POR IA
+</button>
+
+<div id="quizResultado"></div>
+
+</div>
+
+<!-- ESTATÍSTICAS -->
+
+<div class="stats">
+
+<div class="statBox">
+<h2>92%</h2>
+<p>Precisão Experimental</p>
+</div>
+
+<div class="statBox">
+<h2>12K+</h2>
+<p>Análises Demo</p>
+</div>
+
+<div class="statBox">
+<h2>24/7</h2>
+<p>Sistema Online</p>
+</div>
+
+<div class="statBox">
+<h2>AI</h2>
+<p>Deepfake Detection</p>
+</div>
+
+</div>
+
+<!-- FEATURES -->
+
+<div class="features">
+
+<div class="feature">
 <h3>IA Generativa</h3>
 <p>
-Detecção de possíveis conteúdos produzidos por inteligência artificial.
+Análise de mídia sintética.
 </p>
 </div>
 
-<div class="infoBox">
+<div class="feature">
 <h3>Deepfake</h3>
 <p>
-Análise experimental de manipulação facial e mídia sintética.
+Reconhecimento experimental.
 </p>
 </div>
 
-<div class="infoBox">
+<div class="feature">
 <h3>Áudio IA</h3>
 <p>
-Detecção de voz clonada e conteúdo sintético.
+Verificação de voz sintética.
 </p>
 </div>
 
-<div class="infoBox">
+<div class="feature">
 <h3>Segurança</h3>
 <p>
-Sistema educativo e experimental para análise digital.
+Tecnologia educativa.
+</p>
+</div>
+
+</div>
+
+<!-- FAQ -->
+
+<div class="faq">
+
+<div class="faqItem">
+<h3>O detector é perfeito?</h3>
+<p>
+Não. Os resultados são experimentais.
+</p>
+</div>
+
+<div class="faqItem">
+<h3>Detecta deepfake?</h3>
+<p>
+O sistema realiza análise experimental de mídia IA.
+</p>
+</div>
+
+<div class="faqItem">
+<h3>Precisa instalar?</h3>
+<p>
+Não. Funciona online.
+</p>
+</div>
+
+</div>
+
+<!-- TESTEMUNHOS -->
+
+<div class="testimonials">
+
+<div class="testimonial">
+<h3>Ana</h3>
+<p>
+“Interface rápida e moderna.”
+</p>
+</div>
+
+<div class="testimonial">
+<h3>Lucas</h3>
+<p>
+“Projeto interessante para estudos.”
+</p>
+</div>
+
+<div class="testimonial">
+<h3>Maria</h3>
+<p>
+“Visual profissional e simples.”
 </p>
 </div>
 
