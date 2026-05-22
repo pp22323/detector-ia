@@ -2,7 +2,21 @@ exports.handler = async (event) => {
 
 try{
 
-return {
+const apiKey =
+process.env.HIVE_API_KEY;
+
+if(!apiKey){
+
+return{
+statusCode:500,
+body:JSON.stringify({
+erro:"API Key não encontrada"
+})
+};
+
+}
+
+return{
 
 statusCode:200,
 
@@ -13,9 +27,8 @@ headers:{
 body:JSON.stringify({
 
 status:true,
-score:87,
-tipo:"IA / Deepfake",
-msg:"Possível mídia gerada por IA"
+msg:"Hive conectada",
+api:true
 
 })
 
@@ -23,14 +36,14 @@ msg:"Possível mídia gerada por IA"
 
 }catch(err){
 
-return {
+return{
 
 statusCode:500,
 
 body:JSON.stringify({
 
 status:false,
-erro:"Erro detector"
+erro:err.message
 
 })
 
