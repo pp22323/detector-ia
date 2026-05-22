@@ -56,7 +56,7 @@ const imagensQuiz = [
 let quizAtual = 0;
 let pontos = 0;
 
-// IMAGEM
+// ANALISE REAL HIVE
 
 async function analisarImagem(){
 
@@ -89,66 +89,70 @@ document.getElementById(
 );
 
 resultado.innerHTML =
-"🤖 IA analisando...";
+"🤖 IA analisando imagem...";
 
 loadingBar.style.display =
 "block";
 
 loadingFill.style.width =
-"20%";
+"25%";
 
 try{
 
+const formData =
+new FormData();
+
+formData.append(
+"media",
+file
+);
+
 const res =
 await fetch(
-"/api/analisar"
+"/api/analisar",
+{
+method:"POST",
+body:formData
+}
 );
 
 const data =
 await res.json();
 
+console.log(data);
+
 loadingFill.style.width =
 "100%";
 
-setTimeout(()=>{
+if(
+data.output
+){
 
-if(data.status){
-
-const score =
-Math.floor(
-Math.random()*40
-)+60;
-
-resultado.innerHTML=
+resultado.innerHTML =
 `
-⚠️ Análise concluída
+✅ Análise concluída
 
 <br><br>
 
-Score IA:
-${score}%
-
-<br><br>
-
-Hive conectada
+Hive respondeu com sucesso
 `;
 
 }else{
 
-resultado.innerHTML=
+resultado.innerHTML =
 `
-Erro detector
+❌ Hive não retornou análise
 `;
 
 }
 
-},1500);
-
 }catch(err){
 
-resultado.innerHTML=
+console.log(err);
+
+resultado.innerHTML =
 `
-Erro conexão
+❌ Erro conexão Hive
 `;
 
 }
@@ -191,11 +195,11 @@ setTimeout(()=>{
 
 audioResultado.innerHTML=
 `
-✅ Áudio recebido
+✅ Áudio enviado
 
 <br><br>
 
-Análise experimental
+Detector experimental
 `;
 
 },2000);
@@ -275,7 +279,7 @@ quizResultado.innerHTML=
 
 <br><br>
 
-Pontuação final:
+Pontuação:
 
 ${pontos}/20
 `;
