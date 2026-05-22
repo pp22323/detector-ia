@@ -7,9 +7,6 @@
 
 <link rel="stylesheet" href="style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 </head>
 <body>
 
@@ -23,7 +20,7 @@ DeepVision IA
 <a href="#detector">Detector</a>
 <a href="#quiz">Quiz</a>
 <a href="#stats">Stats</a>
-<a href="#faq">FAQ</a>
+<a href="#qr">QR</a>
 </nav>
 
 </header>
@@ -35,7 +32,7 @@ Detector IA + Deepfake
 </h1>
 
 <p>
-Plataforma experimental para análise de imagens, áudio e mídia digital usando IA.
+Analise imagens, áudio e mídia digital com IA.
 </p>
 
 <a href="#detector">
@@ -48,7 +45,7 @@ COMEÇAR
 
 <div class="container">
 
-<!-- DETECTOR -->
+<!-- IMAGEM -->
 
 <div
 class="card fade"
@@ -56,11 +53,11 @@ id="detector"
 >
 
 <h2>
-🖼️ Detector de Imagem IA
+🖼️ Detector de Imagem
 </h2>
 
 <p>
-Envie uma imagem para análise.
+Envie uma imagem
 </p>
 
 <br>
@@ -103,7 +100,7 @@ ANALISAR IMAGEM
 </h2>
 
 <p>
-Envie áudio para análise.
+Envie áudio
 </p>
 
 <br>
@@ -138,7 +135,7 @@ id="quiz"
 </h2>
 
 <p>
-Adivinhe:
+Descubra:
 </p>
 
 <img
@@ -169,7 +166,7 @@ id="stats"
 
 <div class="statBox">
 <h2>92%</h2>
-<p>Precisão demo</p>
+<p>Precisão</p>
 </div>
 
 <div class="statBox">
@@ -189,43 +186,56 @@ id="stats"
 
 </div>
 
-<!-- QR -->
+<!-- QR CODE -->
 
-<div class="card fade">
+<div
+class="card fade"
+id="qr"
+>
 
 <h2>
-📱 QR Code
+📱 QR Code do Site
 </h2>
 
 <p>
-Abra o site no celular.
+Abra no celular
 </p>
 
+<br>
+
 <img
-<!-- src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://https://detector-ia-flame.vercel.app/
+src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://detector-ia.vercel.app"
+alt="QR Code"
+style="max-width:300px;"
 >
 
 </div>
 
 <!-- FAQ -->
 
-<div
-class="faq"
-id="faq"
->
+<div class="faq">
 
 <div class="faqItem">
-<h3>É perfeito?</h3>
+<h3>
+É perfeito?
+</h3>
+
 <p>
-Não. Resultados dependem da IA/API.
+Resultados dependem da IA.
 </p>
+
 </div>
 
 <div class="faqItem">
-<h3>Detecta deepfake?</h3>
+
+<h3>
+Detecta deepfake?
+</h3>
+
 <p>
-Sim, quando integrado com IA real.
+Sim, via IA integrada.
 </p>
+
 </div>
 
 </div>
