@@ -1,271 +1,365 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeepVision IA</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVision IA - A Nova Era da Análise Visual e Sonora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<div class="bg"></div>
-
-<header>
-
-<div class="logo">
-DeepVision IA
-</div>
-
-<nav>
-<a href="#detector">Detector</a>
-<a href="#quiz">Quiz</a>
-<a href="#stats">Stats</a>
-<a href="#sobre">Sobre</a>
-</nav>
-
-</header>
-
-<section class="hero">
-
-<h1>
-Detector IA + Deepfake
-</h1>
-
-<p>
-Analise imagens e áudio com inteligência artificial.
-</p>
-
-<div class="online">
-
-🟢 Detector online
-
-</div>
-
-<a href="#detector">
-<button>
-COMEÇAR
-</button>
-</a>
-
-</section>
-
-<div class="container">
-
-<!-- DETECTOR -->
-
-<div
-class="card fade"
-id="detector"
->
-
-<h2>
-🖼️ Detector de Imagem IA
-</h2>
-
-<p>
-Envie uma imagem para análise.
-</p>
-
-<br>
-
-<input
-type="file"
-id="imageInput"
-accept="image/*"
->
-
-<br><br>
-
-<img
-id="preview"
-style="display:none;"
->
-
-<br><br>
-
-<button
-onclick="analisarImagem()"
->
-ANALISAR IMAGEM
-</button>
-
-<div id="loadingBar">
-<div id="loadingFill"></div>
-</div>
-
-<div id="resultado"></div>
-
-</div>
-
-<!-- AUDIO -->
-
-<div class="card fade">
-
-<h2>
-🎤 Detector de Áudio
-</h2>
-
-<p>
-Analise voz e áudio.
-</p>
-
-<br>
-
-<input
-type="file"
-id="audioInput"
-accept="audio/*"
->
-
-<br><br>
-
-<button
-onclick="analisarAudio()"
->
-ANALISAR ÁUDIO
-</button>
-
-<div id="audioResultado"></div>
-
-</div>
-
-<!-- QUIZ -->
-
-<div
-class="card fade"
-id="quiz"
->
-
-<h2>
-🧠 Quiz — Real ou IA?
-</h2>
-
-<p>
-Adivinhe a imagem:
-</p>
-
-<img
-id="quizImage"
-src="https://thispersondoesnotexist.com/"
->
-
-<br><br>
-
-<button onclick="responder('real')">
-REAL
-</button>
-
-<button onclick="responder('ia')">
-IA
-</button>
-
-<div id="quizResultado"></div>
-
-</div>
-
-<!-- STATS -->
-
-<div
-class="stats"
-id="stats"
->
-
-<div class="statBox">
-<h2>92%</h2>
-<p>Precisão</p>
-</div>
-
-<div class="statBox">
-<h2>12K+</h2>
-<p>Análises</p>
-</div>
-
-<div class="statBox">
-<h2>24/7</h2>
-<p>Online</p>
-</div>
-
-<div class="statBox">
-<h2>AI</h2>
-<p>Deepfake</p>
-</div>
-
-</div>
-
-<!-- COMO FUNCIONA -->
-
-<div
-class="card fade"
-id="sobre"
->
-
-<h2>
-⚡ Como funciona
-</h2>
-
-<p>
-
-1. Envie mídia
-
-<br><br>
-
-2. A IA processa
-
-<br><br>
-
-3. Veja o resultado
-
-</p>
-
-</div>
-
-<!-- FEATURES -->
-
-<div class="card fade">
-
-<h2>
-✨ Recursos
-</h2>
-
-<p>
-
-✔ Preview da imagem
-
-<br><br>
-
-✔ Detector IA
-
-<br><br>
-
-✔ Áudio
-
-<br><br>
-
-✔ Quiz
-
-<br><br>
-
-✔ Interface animada
-
-</p>
-
-</div>
-
-</div>
-
-<footer>
-
-DeepVision IA © 2026
-
-<br><br>
-
-Detector experimental de IA
-
-</footer>
-
-<script src="script.js"></script>
-
+    <div class="background-container"></div>
+
+    <header id="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">DeepVision IA</div>
+                <ul class="nav-links">
+                    <li><a href="#hero">Início</a></li>
+                    <li><a href="#como-funciona">Como Funciona</a></li>
+                    <li><a href="#recursos">Recursos</a></li>
+                    <li><a href="#quiz">Quiz</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+                <div class="cta-button">
+                    <a href="#analise-rapida" class="btn neon-button">Análise Rápida</a>
+                </div>
+                <div class="hamburger">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Desvende o Futuro com DeepVision IA</h1>
+                    <p>Inteligência Artificial para análise visual e sonora revolucionária. Da identificação de objetos à distinção entre real e artificial.</p>
+                    <a href="#analise-rapida" class="btn neon-button large">Comece Agora</a>
+                    <div class="hero-features">
+                        <span><i class="icon fas fa-eye"></i> Análise de Imagens</span>
+                        <span><i class="icon fas fa-microphone-alt"></i> Análise de Áudio</span>
+                        <span><i class="icon fas fa-brain"></i> IA Real ou Humano</span>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="assets/images/hero-ai-graphic.svg" alt="Ilustração IA">
+                </div>
+            </div>
+        </section>
+
+        <section id="como-funciona" class="section section-dark">
+            <div class="container">
+                <h2 class="section-title">Como Funciona a Magia</h2>
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-upload"></i></div>
+                        <h3>1. Envie seu Arquivo</h3>
+                        <p>Faça upload de imagens ou gravações de áudio diretamente em nossa plataforma.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-robot"></i></div>
+                        <h3>2. Análise Inteligente</h3>
+                        <p>Nossos algoritmos de IA processam seus dados com velocidade e precisão incomparáveis.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+                        <h3>3. Resultados Reveladores</h3>
+                        <p>Receba insights detalhados, classificações e detecções de forma clara e visual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analise-rapida" class="section section-analysis">
+            <div class="container">
+                <h2 class="section-title">Análise Rápida</h2>
+                <div class="analysis-tabs">
+                    <button class="tab-button active" data-tab="tab-image">Detector de Imagem IA</button>
+                    <button class="tab-button" data-tab="tab-audio">Detector de Áudio IA</button>
+                </div>
+
+                <div id="tab-image" class="tab-content active">
+                    <div class="analysis-form">
+                        <div class="upload-area">
+                            <label for="imageUpload" class="upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Arraste e solte ou clique para selecionar uma imagem</span>
+                                <input type="file" id="imageUpload" accept="image/*" hidden>
+                            </label>
+                            <div id="imagePreviewContainer" class="image-preview">
+                                <img id="imagePreview" src="#" alt="Pré-visualização da Imagem" class="hidden">
+                                <span id="noImageText">Nenhuma imagem selecionada</span>
+                            </div>
+                        </div>
+                        <button id="analyzeImageBtn" class="btn neon-button analyze-btn disabled">Analisar Imagem</button>
+                        <div id="imageLoading" class="loading-animation hidden">
+                            <div class="spinner"></div>
+                            <p>Analisando...</p>
+                        </div>
+                        <div id="imageResult" class="result-display hidden">
+                            <h3>Resultado da Análise de Imagem</h3>
+                            <p><strong>Confiança:</strong> <span id="imageConfidence">--%</span></p>
+                            <p><strong>Objeto Detectado:</strong> <span id="imageObject">--</span></p>
+                            <div class="visual-result">
+                                <canvas id="imageAnalysisCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-audio" class="tab-content">
+                    <div class="analysis-form">
+                        <div class="upload-area audio-upload">
+                            <label for="audioUpload" class="upload-label">
+                                <i class="fas fa-file-audio"></i>
+                                <span>Arraste e solte ou clique para selecionar um arquivo de áudio</span>
+                                <input type="file" id="audioUpload" accept="audio/*" hidden>
+                            </label>
+                            <span id="audioFileName">Nenhum arquivo selecionado</span>
+                        </div>
+                        <button id="analyzeAudioBtn" class="btn neon-button analyze-btn disabled">Analisar Áudio</button>
+                        <div id="audioLoading" class="loading-animation hidden">
+                            <div class="spinner"></div>
+                            <p>Analisando...</p>
+                        </div>
+                        <div id="audioResult" class="result-display hidden">
+                            <h3>Resultado da Análise de Áudio</h3>
+                            <p><strong>Tipo de Som:</strong> <span id="audioType">--</span></p>
+                            <p><strong>Precisão:</strong> <span id="audioAccuracy">--%</span></p>
+                            <div class="audio-visualizer">
+                                <p>Visualização do Áudio (Exemplo)</p>
+                                <div class="bars">
+                                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="recursos" class="section section-features">
+            <div class="container">
+                <h2 class="section-title">Nossos Recursos de Ponta</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-search-plus"></i></div>
+                        <h3>Detecção Precisa</h3>
+                        <p>Identifique objetos, rostos e cenários em imagens com precisão de ponta.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-wave-square"></i></div>
+                        <h3>Análise Sonora</h3>
+                        <p>Classifique sons ambientes, vozes e ruídos com algoritmos avançados.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+                        <h3>Real ou IA?</h3>
+                        <p>Desafie sua percepção com nosso quiz interativo que distingue conteúdo gerado por IA.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                        <h3>Dashboard Dinâmico</h3>
+                        <p>Monitore estatísticas e tendências em tempo real com visualizações interativas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                        <h3>Interface Imersiva</h3>
+                        <p>Experiência de usuário moderna com design neon e animações fluidas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-plug"></i></div>
+                        <h3>API Integrável</h3>
+                        <p>Pronto para integrar com seus próprios sistemas e fluxos de trabalho.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="section section-quiz">
+            <div class="container">
+                <h2 class="section-title">Quiz: Você Consegue Identificar?</h2>
+                <p class="quiz-subtitle">Teste suas habilidades contra a IA!</p>
+                <div id="quiz-container">
+                    <div id="quiz-question">
+                        <img id="quizImage" src="" alt="Imagem do Quiz">
+                        <div class="quiz-options">
+                            <button class="quiz-option btn" data-answer="real">Real</button>
+                            <button class="quiz-option btn" data-answer="ia">Gerado por IA</button>
+                        </div>
+                    </div>
+                    <div id="quiz-result" class="hidden">
+                        <p id="feedback"></p>
+                        <button id="nextQuestionBtn" class="btn neon-button">Próxima Imagem</button>
+                    </div>
+                </div>
+                <div class="quiz-stats">
+                    <p>Pontuação: <span id="score">0</span> / <span id="totalQuestions">20</span></p>
+                    <p>Questão: <span id="currentQuestionNumber">1</span></p>
+                </div>
+                <div id="final-quiz-result" class="hidden">
+                    <h2>Resultado Final do Quiz</h2>
+                    <p>Você acertou <span id="finalScore">0</span> de 20 perguntas!</p>
+                    <p id="finalMessage"></p>
+                    <button id="restartQuizBtn" class="btn neon-button">Jogar Novamente</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="section section-dashboard">
+            <div class="container">
+                <h2 class="section-title">Dashboard de IA</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Uso da API</h3>
+                        </div>
+                        <div class="card-content">
+                            <p class="animated-stat"><span class="stat-count" data-target="15678">0</span> Requisições</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <i class="fas fa-users"></i>
+                            <h3>Usuários Ativos</h3>
+                        </div>
+                        <div class="card-content">
+                            <p class="animated-stat"><span class="stat-count" data-target="987">0</span> Online</p>
+                            <div class="indicator">
+                                <span class="status online"></span> Online
+                                <span class="status offline"></span> Offline
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <i class="fas fa-microchip"></i>
+                            <h3>Processamento IA</h3>
+                        </div>
+                        <div class="card-content">
+                            <p class="animated-stat"><span class="stat-count" data-target="85">0</span>% Utilização</p>
+                            <div class="donut-chart">
+                                <svg viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15.915494309189535" fill="none" stroke="#36a2eb" stroke-width="3" stroke-dasharray="100" stroke-dashoffset="15"></circle>
+                                </svg>
+                                <span class="percentage">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card large">
+                        <div class="card-header">
+                            <i class="fas fa-chart-pie"></i>
+                            <h3>Análise de Dados</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="dashboardChart" width="400" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section section-dark">
+            <div class="container">
+                <h2 class="section-title">Perguntas Frequentes (FAQ)</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            O que é DeepVision IA?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>DeepVision IA é uma plataforma inovadora que utiliza inteligência artificial para realizar análises avançadas de imagens e áudios, além de oferecer um quiz interativo para testar a percepção humana contra a IA.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Quais tipos de arquivos posso analisar?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Atualmente, suportamos o upload de arquivos de imagem (JPEG, PNG, etc.) para análise visual e arquivos de áudio (MP3, WAV, etc.) para análise sonora.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Como funciona a integração com APIs externas?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>A plataforma é projetada com a possibilidade de integração via API. Você pode usar o endpoint `/api/analisar.js` como base para conectar seus próprios modelos ou serviços de IA.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            O quiz é baseado em que tipo de conteúdo?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>O quiz apresenta uma mistura de imagens reais e imagens geradas por algoritmos de inteligência artificial. O objetivo é desafiar sua capacidade de distinguir entre elas.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            O site é responsivo?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Sim, o DeepVision IA foi desenvolvido com design responsivo, garantindo uma experiência visual otimizada em desktops, tablets e smartphones.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <h2>DeepVision IA</h2>
+                    <p>Revolucionando a forma como interagimos com a inteligência artificial, oferecendo análises visuais e sonoras poderosas e acessíveis.</p>
+                </div>
+                <div class="footer-section links">
+                    <h3>Links Úteis</h3>
+                    <ul>
+                        <li><a href="#hero">Início</a></li>
+                        <li><a href="#recursos">Recursos</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#">Termos de Serviço</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-envelope"></i> suporte@deepvision.ia</p>
+                    <p><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DeepVision IA. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script> <!-- Substitua 'your-font-awesome-kit-id' pelo seu ID do Font Awesome -->
 </body>
 </html>
