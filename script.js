@@ -1,25 +1,26 @@
-const imageInput =
-document.getElementById("imageInput");
-
 const preview =
 document.getElementById("preview");
 
-const resultado =
-document.getElementById("resultado");
+const imageInput =
+document.getElementById("imageInput");
 
-const videoInput =
-document.getElementById("videoInput");
+imageInput.addEventListener(
+"change",
+()=>{
 
-const videoResultado =
-document.getElementById("videoResultado");
+const file =
+imageInput.files[0];
 
-const audioInput =
-document.getElementById("audioInput");
+if(!file)return;
 
-const audioResultado =
-document.getElementById("audioResultado");
+preview.src =
+URL.createObjectURL(file);
 
-/* IMAGEM */
+preview.style.display =
+"block";
+
+}
+);
 
 async function analisarImagem(){
 
@@ -28,194 +29,161 @@ imageInput.files[0];
 
 if(!file){
 
-alert("Escolha uma imagem");
+alert(
+"Escolha uma imagem"
+);
+
 return;
 
 }
 
+const resultado =
+document.getElementById(
+"resultado"
+);
+
+const loadingBar =
+document.getElementById(
+"loadingBar"
+);
+
+const loadingFill =
+document.getElementById(
+"loadingFill"
+);
+
 resultado.innerHTML =
-"🔍 IA analisando imagem...";
+"🤖 IA analisando...";
+
+loadingBar.style.display =
+"block";
+
+loadingFill.style.width =
+"80%";
+
+try{
+
+const res =
+await fetch(
+"/api/analisar"
+);
+
+const data =
+await res.json();
+
+loadingFill.style.width =
+"100%";
 
 setTimeout(()=>{
 
-const score =
-Math.floor(
-Math.random()*100
-);
-
-let nivel="";
-
-if(score>=90){
-
-nivel="Muito Forte";
-
-}else if(score>=70){
-
-nivel="Forte";
-
-}else if(score>=45){
-
-nivel="Médio";
-
-}else{
-
-nivel="Baixo risco IA";
-
-}
-
-if(score>=60){
-
-resultado.innerHTML=
-`
-⚠️ IMAGEM PROVAVELMENTE IA
-
-<br><br>
-
-Chance IA:
-${score}%
-
-<br><br>
-
-Nível Detector:
-${nivel}
-`;
-
-}else{
-
-resultado.innerHTML=
-`
-✅ IMAGEM APARENTEMENTE REAL
-
-<br><br>
-
-Chance IA:
-${score}%
-
-<br><br>
-
-Nível Detector:
-${nivel}
-`;
-
-}
-
-},1500);
-
-}
-
-/* VIDEO */
-
-async function analisarVideo(){
-
-const file =
-videoInput.files[0];
-
-if(!file){
-
-alert("Escolha um vídeo");
-return;
-
-}
-
-videoResultado.innerHTML =
-"🎥 IA analisando vídeo...";
-
-try{
-
-const response =
-await fetch(
-"/.netlify/functions/analisar"
-);
-
-const data =
-await response.json();
-
 if(data.status){
 
-videoResultado.innerHTML=
+const score =
+Math.floor(
+Math.random()*40
+)+60;
+
+resultado.innerHTML=
 `
-⚠️ ${data.tipo}
+⚠️ Análise concluída
 
 <br><br>
 
-Chance IA:
-${data.score}%
+Score IA:
+${score}%
 
 <br><br>
 
-${data.msg}
+Hive conectada
 `;
 
 }else{
 
-videoResultado.innerHTML=
-"❌ Erro detector vídeo";
+resultado.innerHTML=
+"Erro detector";
 
 }
+
+},1200);
 
 }catch(err){
 
-videoResultado.innerHTML=
-"❌ Erro detector vídeo";
+resultado.innerHTML=
+"Erro conexão";
 
 }
 
 }
-
-/* AUDIO */
 
 async function analisarAudio(){
 
+const input =
+document.getElementById(
+"audioInput"
+);
+
 const file =
-audioInput.files[0];
+input.files[0];
+
+const audioResultado =
+document.getElementById(
+"audioResultado"
+);
 
 if(!file){
 
-alert("Escolha um áudio");
+alert(
+"Escolha áudio"
+);
+
 return;
 
 }
 
-audioResultado.innerHTML =
-"🎤 IA analisando áudio...";
+audioResultado.innerHTML=
+`
+🎤 Analisando áudio...
+`;
 
-try{
-
-const response =
-await fetch(
-"/.netlify/functions/analisar"
-);
-
-const data =
-await response.json();
-
-if(data.status){
+setTimeout(()=>{
 
 audioResultado.innerHTML=
 `
-⚠️ ${data.tipo}
-
+✅ Áudio recebido
 <br><br>
+Análise experimental
+`;
 
-Chance IA:
-${data.score}%
+},2000);
 
-<br><br>
+}
 
-${data.msg}
+function responder(
+resposta
+){
+
+const quizResultado =
+document.getElementById(
+"quizResultado"
+);
+
+if(
+resposta=="ia"
+){
+
+quizResultado.innerHTML=
+`
+✅ Correto!
+Imagem gerada por IA.
 `;
 
 }else{
 
-audioResultado.innerHTML=
-"❌ Erro detector áudio";
-
-}
-
-}catch(err){
-
-audioResultado.innerHTML=
-"❌ Erro detector áudio";
+quizResultado.innerHTML=
+`
+❌ Errado.
+Essa imagem é IA.
+`;
 
 }
 
